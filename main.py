@@ -1,38 +1,48 @@
 import httpx
 import json
+import threading
+from colorama import Fore, init
 from helpers.const import *
+from helpers.utils import *
 
-
-
-
+init(convert=True)
+__lock__ = threading.Lock()
 class Twitter:
     def __init__(self) -> None:
-        with open("config.json","r") as f:
-            self.config = json.load(f)
-            self.auth_token = self.config["auth_token"]
-            self.ct0 = self.config["ct0"]
-     
+        self.threads = int(input("Threads: "))
+        self.min_followers = int(input("Minimum followers: "))
+        self.usernames = open('input/usernames.txt', 'r').read().splitlines()
+        
+    def scrape(self,username : str):
+        try:
+            resp = get_followers(screen_name=username,min_followers=self.min_followers)
+        except:
+            return
+        if not resp[0] or not resp[2]:
+            with __lock__:
+                print(f"{Fore.RED}INFO : {Fore.RESET} {Fore.YELLOW}[{username}]{Fore.RESET}{Fore.LIGHTRED_EX} has less than ({self.min_followers}) followers{Fore.RESET} [{resp[1]}]")
+            return
+        with open('output/scraped.txt','a',encoding='utf-8') as f:
+            f.write(f"{username}:{resp[2]}\n")
+            f.close()
+        with __lock__:
+            print(f"{Fore.RED}INFO : {Fore.RESET} {Fore.YELLOW}[{username}]{Fore.RESET}{Fore.GREEN} has ({resp[1]}) followers and ({resp[2]}) domain{Fore.RESET}")
+        return
+        
+
+    def startThreads(self):
+        for username in self.usernames:
+            threading.Thread(target=self.scrape, args=(username,)).start()
+            if threading.active_count()>= self.threads:
+                while True:
+                    if threading.active_count() < self.threads:
+                        break
+        print(f"{Fore.GREEN}INFO : {Fore.RESET} Finished scraping{Fore.RESET}")
+        
     
-    
-    def scrape(self,user_id : str = "1517536143533027329"):
-        with httpx.Client() as client:
-            try:
-                headers = base_headers
-                headers["cookie"] = f"auth_token={self.auth_token}; ct0={self.ct0}"
-                headers['X-CSRF-Token'] = self.ct0
-                new_variables = variables
-                new_variables["userId"] = user_id
-                params = {
-    'variables': json.dumps(new_variables),
-    'features': json.dumps(features),
-}
-                # response = client.get('https://twitter.com/i/api/graphql/8cyc0OKedV_XD62fBjzxUw/Following', headers=headers, params=params)
-                resp = client.get("https://api.twitter.com/1.1/followers/list.json?cursor=-1&screen_name=twitterdev&skip_status=true&include_user_entities=false",headers=base_headers)
-                print(resp.text)
-            except Exception as e:
-                print(e)
+
                 
                 
 if __name__ == "__main__":
     r = Twitter()
-    r.scrape()
+    r.startThreads()

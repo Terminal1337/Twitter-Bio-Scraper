@@ -15,11 +15,26 @@ base_headers = {
     'Sec-Fetch-Site': 'same-origin',
     'Sec-GPC': '1',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
-    # 'X-Client-Transaction-ID': 'hCgdQiyZA81URQ4wQVi210TVnjib/6+5ycuKjex8V5bmm8T7f8THG4mXDGJtXY/w34xWe4Qb1sZjlYa6Bz6Vs9tX7MkEhQ',
-    # 'X-Twitter-Active-User': 'yes',
-    # 'X-Twitter-Auth-Type': 'OAuth2Session',
-    # 'X-Twitter-Client-Language': 'en'
+    'X-Twitter-Active-User': 'yes',
+    'X-Twitter-Auth-Type': 'OAuth2Session',
+    'X-Twitter-Client-Language': 'en'
 }
+ct0_headers =  {
+            'authority': 'twitter.com',
+            'accept': '*/*',
+            'accept-language': 'en-US,en;q=0.9',
+            'authorization': 'Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA',
+            'origin': 'https://twitter.com',
+            'referer': 'https://twitter.com/settings/profile',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-origin',
+            'sec-gpc': '1',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+            'x-twitter-active-user': 'yes',
+            'x-twitter-auth-type': 'OAuth2Session',
+            'x-twitter-client-language': 'en'
+        }
 
 variables = {
     'count': 20,
@@ -50,3 +65,5 @@ features = {
     'responsive_web_enhance_cards_enabled': False
 }
 
+
+proxies = open('input/proxies.txt', 'r').read().splitlines()
